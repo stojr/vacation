@@ -25,18 +25,16 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light-b
 /* HEADER */
 header {
   background: linear-gradient(135deg, #0d1b4b 0%, #1a237e 40%, #4a148c 100%);
-  color: white; padding: 36px 32px 28px; position: relative; overflow: hidden;
+  color: white; padding: 12px 28px; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; column-gap: 20px;
 }
-header::before {
-  content: '✨ 🏰 🎢 ✨'; position: absolute; top: 12px; right: 24px;
-  font-size: 26px; opacity: 0.45; letter-spacing: 6px;
-}
-header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-header p { font-size: 13px; opacity: 0.75; margin-top: 5px; }
-.header-meta { display: flex; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
-.header-meta div { background: rgba(255,255,255,0.12); border-radius: 10px; padding: 9px 16px; }
-.header-meta .label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; }
-.header-meta .value { font-size: 14px; font-weight: 700; margin-top: 2px; }
+header h1 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; grid-column: 1; line-height: 1.2; }
+header p { font-size: 11px; opacity: 0.7; margin-top: 2px; grid-column: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-meta { grid-column: 2; grid-row: 1 / span 2; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin: 0; }
+.header-meta div { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 4px 10px; }
+.header-meta .label { font-size: 8px; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.6px; }
+.header-meta .value { font-size: 11.5px; font-weight: 700; margin-top: 1px; white-space: nowrap; }
+@media (max-width: 900px) { .header-meta { display: none; } header { grid-template-columns: 1fr; } }
 
 /* TABS */
 .tab-bar {
@@ -233,6 +231,8 @@ tr.booked td:first-child { border-left: 3px solid var(--green); }
   <button class="tab-btn" onclick="showTab('planning')">🔒 2026 Planning</button>
   <button class="tab-btn" onclick="showTab('quotes')">🔒 Quotes Reference</button>
   <button class="tab-btn active" onclick="showTab('planner')">🗓 Trip Planner</button>
+  <button class="tab-btn" onclick="showTab('tips')">💡 Tips</button>
+  <button class="tab-btn" onclick="showTab('pack')">🧳 Packing</button>
   <button class="tab-btn print-btn" onclick="printPlan()" title="Print or save the full 16-day plan as PDF — one page per day, all cards expanded">🖨️ Print Plan</button>
 </div>
 
@@ -967,6 +967,13 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
   #tab-planner main{padding:12px 8px;}
   .dc-day-bar{padding:8px 12px;}
 }
+.meal-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+.meal-table th{background:#0d1b4b;color:#fff;padding:7px 10px;text-align:left;font-size:12px;letter-spacing:.03em;}
+.meal-table td{padding:7px 10px;border-bottom:1px solid #E5E7EB;vertical-align:top;line-height:1.45;}
+.meal-table tr:nth-child(even){background:#F8FAFC;}
+.meal-table td:first-child{white-space:nowrap;font-weight:700;}
+.meal-table .mt-uni td:first-child{border-left:4px solid #C8102E;}
+.meal-table .mt-dis td:first-child{border-left:4px solid #006EE6;}
 /* ── PRINT / PDF EXPORT ── */
 .tab-btn.print-btn { margin-left:auto; background:#0d1b4b; color:#fff; border-color:#0d1b4b; }
 .tab-btn.print-btn:hover { background:#1a3a8a; }
@@ -978,6 +985,11 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
   .dc-body.collapsed { display:block !important; }
   .dc-card.day-hidden{display:block !important;}
   .pd-nav,.pd-showall{display:none !important;}
+  body.print-tips #tab-planner{display:none !important;}
+  body.print-tips #tab-tips{display:block !important;}
+  body.print-pack #tab-planner{display:none !important;}
+  body.print-pack #tab-pack{display:block !important;}
+  #tab-tips .dc-card{break-before:auto;page-break-before:auto;}
   .dc-card { break-before:page; page-break-before:always; box-shadow:none !important; border:1px solid #E5E7EB; margin:0 0 10px; }
   main > .dc-card:first-of-type { break-before:auto; page-break-before:auto; }
   .dc-row, .dc-strat-item, .dc-time-hdr, .dc-weather-bar, .dc-footer { break-inside:avoid; page-break-inside:avoid; }
@@ -1140,7 +1152,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Express Pass</div>
-        <div class="dc-strat-val">Pick up Express Pass wristbands at the Portofino Bay Bell Desk upon check-in · Confirm they're linked in the Universal app before tomorrow</div>
+        <div class="dc-strat-val">Express Unlimited is tied to your ROOM KEYS (no wristbands) — get keys at check-in, confirm in the Universal app or Vacation Planning Center</div>
       </div>
     </div>
 
@@ -1181,7 +1193,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r3')"/>
         <div class="dc-time">11:00a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t3">🏝️ Arrive <strong>Portofino Bay Resort</strong> · Drop bags at Bell Services if room not ready · Pick up <strong>Express Pass wristbands</strong> at Bell Desk immediately <span class="dc-badge b-tip">💡 DO THIS FIRST</span></div>
+          <div class="dc-rt" id="dc-jul25-t3">🏝️ Arrive <strong>Portofino Bay Resort</strong> · Drop bags at Bell Services if room not ready · Room keys = your <strong>Express Unlimited passes</strong> — confirm at the Vacation Planning Center (photo package pickup too) <span class="dc-badge b-tip">💡 DO THIS FIRST</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t3',this)">✎</button>
       </div>
@@ -1190,7 +1202,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r4')"/>
         <div class="dc-time">11:15a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t4">📱 Open <strong>Universal app</strong> — link Express Pass wristbands · Download park maps · Set up virtual queue notifications for Hagrid's</div>
+          <div class="dc-rt" id="dc-jul25-t4">📱 Open <strong>Universal app</strong> — confirm Express shows on your room keys/tickets · Download park maps · Check tomorrow's hours &amp; EPA park</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t4',this)">✎</button>
       </div>
@@ -1208,7 +1220,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r6')"/>
         <div class="dc-time">1:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t6">🏊 <strong>Portofino Bay Pool</strong> — Jurassic-themed pool, zero-entry area, water slide · Great for the kids after a travel morning</div>
+          <div class="dc-rt" id="dc-jul25-t6">🏊 <strong>Portofino Bay Pool</strong> — the Beach Pool — white-sand lagoon, zero-entry area, waterslide · Great for the kids after a travel morning</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t6',this)">✎</button>
       </div>
@@ -1217,7 +1229,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r7')"/>
         <div class="dc-time">3:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t7">🔑 <strong>Room Ready</strong> — standard check-in time 4 PM · Request text notification from front desk · Once in: unpack, sunscreen stockpile, charge all devices <span class="dc-badge b-tip">💡 Charge the TapuTapu band for Volcano Bay now</span></div>
+          <div class="dc-rt" id="dc-jul25-t7">🔑 <strong>Room Ready</strong> — standard check-in time 4 PM · Request text notification from front desk · Once in: unpack, sunscreen stockpile, charge all devices <span class="dc-badge b-tip">💡 Volcano Bay heads-up: TapuTapu was retired Oct 2025 — all slides are normal standby lines now</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t7',this)">✎</button>
       </div>
@@ -1228,7 +1240,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r8')"/>
         <div class="dc-time">5:30p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t8">🚶 Walk the resort path to <strong>CityWalk</strong> (~10 min covered walkway) · Browse stores</div>
+          <div class="dc-rt" id="dc-jul25-t8">🚶 Walk the resort path to <strong>CityWalk</strong> (~15 min garden path, or water taxi) · Browse stores</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t8',this)">✎</button>
       </div>
@@ -1237,7 +1249,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r9')"/>
         <div class="dc-time">6:30p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t9">🍕 <strong>Dinner at CityWalk</strong> — good options: Voodoo Doughnut for dessert, Antojitos (Mexican), NBC Sports Grill, or Classic Monster Café · Relaxed, no reservations needed <span class="dc-badge b-tip">💡 Save the nicer meals for park days</span></div>
+          <div class="dc-rt" id="dc-jul25-t9">🍕 <strong>Dinner at CityWalk</strong> — good options: Voodoo Doughnut for dessert, Antojitos (Mexican), NBC Sports Grill, or Toothsome Chocolate Emporium · Relaxed, no reservations needed <span class="dc-badge b-tip">💡 Save the nicer meals for park days</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t9',this)">✎</button>
       </div>
@@ -1246,7 +1258,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul25-r10')"/>
         <div class="dc-time">8:30p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul25-t10">🛏️ Back to hotel · Early night · <strong>Tomorrow: Universal Studios Florida</strong> — park open 9 AM, EPA 8 AM · Set alarm for 6:30 AM</div>
+          <div class="dc-rt" id="dc-jul25-t10">🛏️ Back to hotel · Early night · <strong>Tomorrow: Universal Studios Florida</strong> — confirm hours &amp; EPA park in the app tonight (EPA is sometimes IOA-only) · Set alarm for 7:00 AM</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul25-t10',this)">✎</button>
       </div>
@@ -1352,8 +1364,8 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul26-r5')"/>
         <div class="dc-time">9:10 AM</div>
         <div class="dc-rc">
-          <div class="dc-rt" id="dc-jul26-t5">🎢 <strong>Hollywood Rip Ride Rockit</strong> <span class="dc-badge b-ep">Express Pass</span></div>
-          <div class="dc-rs">Min height 51". Grant (10) at 48"+ can ride.</div>
+          <div class="dc-rt" id="dc-jul26-t5">😈 <strong>Villain-Con Minion Blast</strong> <span class="dc-badge b-ep">Express Pass · all heights</span></div>
+          <div class="dc-rs">Blaster ride-through, whole family competes — Delaney vs Grant score war. (Rip Ride Rockit closed permanently.)</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul26-t5',this)">✎</button>
       </div>
@@ -1443,8 +1455,8 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul26-r13')"/>
         <div class="dc-time">2:00 PM</div>
         <div class="dc-rc">
-          <div class="dc-rt" id="dc-jul26-t13">🎰 <strong>The Simpsons Ride</strong> <span class="dc-badge b-ep">Express Pass</span> <span class="dc-badge b-sh">Fully Indoor</span></div>
-          <div class="dc-rs">Min height 40".</div>
+          <div class="dc-rt" id="dc-jul26-t13">🎭 <strong>Universal Horror Make-Up Show</strong> <span class="dc-badge b-sh">Fully Indoor · ~25-min live show</span></div>
+          <div class="dc-rs">Hilarious classic, perfect storm shelter. (Simpsons Ride + Springfield closed permanently Jan 2025.)</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul26-t13',this)">✎</button>
       </div>
@@ -1463,7 +1475,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul26-r15')"/>
         <div class="dc-time">3:15 PM</div>
         <div class="dc-rc">
-          <div class="dc-rt" id="dc-jul26-t15">🍩 Springfield snack break — Lard Lad Donuts / Fast Food Boulevard <span class="dc-badge b-sh">Indoor</span></div>
+          <div class="dc-rt" id="dc-jul26-t15">👽 <strong>E.T. Adventure</strong> — the 1990 classic dark ride <span class="dc-badge b-sh">Indoor · 34" · Express</span></div>
           
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul26-t15',this)">✎</button>
@@ -1495,8 +1507,8 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul26-r18')"/>
         <div class="dc-time">6:00 PM</div>
         <div class="dc-rc">
-          <div class="dc-rt" id="dc-jul26-t18">🦞 <strong>Lombard's Seafood Grille</strong> — Table Service · San Francisco area <span class="dc-badge b-ht">Book in Advance</span></div>
-          <div class="dc-rs">Book via Universal app — for a Saturday peak season, aim for a 6 or 6:30 PM reservation. No 60-day advance booking system like Disney, but weekend evenings do fill up.</div>
+          <div class="dc-rt" id="dc-jul26-t18">🍔 <strong>Exit to CityWalk — Cowfish dinner</strong> (per dining plan) <span class="dc-badge b-ht">Walk-up friendly</span></div>
+          <div class="dc-rs">Burger-sushi mashup on the walk home — kid-approved, no reservation needed.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul26-t18',this)">✎</button>
       </div>
@@ -1573,7 +1585,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       <span class="dc-hl" style="color:#0f6b8c;">🕗 Early Park Admission: 8:00 AM (Hogsmeade)</span>
       <span class="dc-hl" style="color:#0f6b8c;">⚡ Express Pass: All rides EXCEPT Hagrid's</span>
       <span class="dc-hl" style="color:#EF4444;">🚨 Rope-drop Hagrid's at 9:00 AM — no Express!</span>
-      <span class="dc-hl" style="color:#27AE60;">🍽️ Mythos Restaurant — reserve in advance</span>
+      <span class="dc-hl" style="color:#27AE60;">🍽️ Mythos Restaurant — ✅ BOOKED</span>
     </div>
 
     <div class="dc-strategy">
@@ -1600,7 +1612,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">7:00 AM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t0">📱 <strong>OPEN UNIVERSAL APP — Check Hagrid's virtual queue</strong> <span class="dc-badge b-ep" style="background:#FEE2E2;color:#991B1B;">CRITICAL</span></div>
-          <div class="dc-rs">If a virtual queue / boarding group system is active for Hagrid's, boarding groups release at exactly 7:00 AM. Tap the "Virtual Line" section in the Universal app the moment it hits 7:00 AM.</div>
+          <div class="dc-rs">Check the app tonight: Hagrid's usually runs a STANDBY line (rope-drop it); on select peak days a Virtual Line activates instead — if so, grab a group the moment it opens.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t0',this)">✎</button>
       </div>
@@ -1610,7 +1622,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">7:20 AM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t1">🍳 Quick hotel breakfast — get in and get out today</div>
-          <div class="dc-rs">Garden Grove full breakfast will take too long on a rope-drop day. You need to be at the IoA gates by 7:55 AM.</div>
+          <div class="dc-rs">A full Trattoria del Porto breakfast will take too long on a rope-drop day. You need to be at the IoA gates by 7:55 AM.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t1',this)">✎</button>
       </div>
@@ -1676,7 +1688,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">10:30 AM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t7">🦖 <strong>Jurassic World VelociCoaster</strong> <span class="dc-badge b-ep">Express Pass</span> <span class="dc-badge b-ht">51" min · Evan + Grant</span></div>
-          <div class="dc-rs">Grant (10, avg ~54") should make the 51" min — verify at hotel with a tape measure tonight. Delaney at 7 (avg ~47") likely won't make 51" — one parent stays with her or takes her to Flight of the Hippogriff nearby.</div>
+          <div class="dc-rs">Grant clears 51" (confirmed). Delaney (48") sits this one out — Rider Swap + she does Flight of the Hippogriff with a parent.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t7',this)">✎</button>
       </div>
@@ -1686,7 +1698,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">10:55 AM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t8">🚧 <strong>Jurassic Park River Adventure — CLOSED</strong> · Under major refurbishment Jan 5–Nov 19, 2026</div>
-          <div class="dc-rs">Ends with a big splashdown drop. You WILL get somewhat wet.</div>
+          <div class="dc-rs">Reopens Nov 2026 — skip that corner of Jurassic.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t8',this)">✎</button>
       </div>
@@ -1740,7 +1752,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">1:25 PM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t13">💚 <strong>The Incredible Hulk Coaster</strong> <span class="dc-badge b-ep">Express Pass</span> <span class="dc-badge b-ht">54" min · Evan + Grant (verify)</span></div>
-          <div class="dc-rs">Grant (10) at average height ~54" should just make it — verify.</div>
+          <div class="dc-rs">Grant clears it (confirmed by Dad — meets all height reqs).</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t13',this)">✎</button>
       </div>
@@ -1820,19 +1832,19 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-time">5:20 PM</div>
         <div class="dc-rc">
           <div class="dc-rt" id="dc-jul27-t20">💥 <strong>Doctor Doom's Fearfall</strong> <span class="dc-badge b-ep">Express Pass</span> <span class="dc-badge b-ht">52" min · Evan + Grant (verify)</span></div>
-          <div class="dc-rs">Shot-up drop tower. Min 52" — Grant likely right at the threshold.</div>
+          <div class="dc-rs">Shot-up drop tower. Min 52" — Evan + Grant; Delaney sits out.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t20',this)">✎</button>
       </div>
 
-      <div class="dc-section">🟩 Dinner · Mythos Restaurant · 6:00 PM</div>
+      <div class="dc-section">🟩 Dinner · Mythos Restaurant · ✅ booked (time TBC)</div>
 
       <div class="dc-row t-d" id="dc-jul27-r21">
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul27-r21')"/>
         <div class="dc-time">6:00 PM</div>
         <div class="dc-rc">
-          <div class="dc-rt" id="dc-jul27-t21">🏛️ <strong>Mythos Restaurant</strong> — The Lost Continent · Full Table Service <span class="dc-badge b-ht">Book in Advance</span></div>
-          <div class="dc-rs"><strong>Book via OpenTable or Universal's dining reservation line</strong> — aim for 30–45 days in advance for a Sunday evening.</div>
+          <div class="dc-rt" id="dc-jul27-t21">🏛️ <strong>Mythos Restaurant</strong> — The Lost Continent <span class="dc-badge b-new">✅ BOOKED — time TBC (Melissa has the email)</span></div>
+          <div class="dc-rs">Reservation confirmed — drop the exact time in once Melissa finds the confirmation.</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul27-t21',this)">✎</button>
       </div>
@@ -1889,7 +1901,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
     <!-- NEW PARK BANNER -->
     <div style="background:linear-gradient(135deg,#4c1d95,#7c3aed); color:white; padding:12px 20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
       <span style="font-size:20px;">🌌</span>
-      <span>EPIC UNIVERSE — Brand New Park! Opened May 2026 · Only ~2 months old at your visit · Expect record crowds &amp; long standby waits · No Portofino Bay Express Pass here (see strategy)</span>
+      <span>EPIC UNIVERSE — Opened May 22, 2025 · just over a year old at your visit and still Orlando’s hottest ticket · Expect heavy crowds &amp; long standby waits · No Portofino Bay Express Pass here (see strategy)</span>
     </div>
 
     <div class="dc-header" onclick="dcToggle('jul28')" style="background:linear-gradient(135deg,#1a0533,#4c1d95); color:white;">
@@ -1927,7 +1939,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Height Check</div>
-        <div class="dc-strat-val">Starfall Racers 54"+ · Mario Kart 40"+ · Yoshi's ~35"+ · Dragon Racer's 36"+ · Delaney (~48") should clear most 40" rides — verify day-of</div>
+        <div class="dc-strat-val">Stardust Racers 48" · Mario Kart 40" · Yoshi’s 34" · Dragon Racer’s Rally 48" · Delaney (~48") should clear most 40" rides — verify day-of</div>
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Power-Up Bands</div>
@@ -1966,7 +1978,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r2')"/>
         <div class="dc-time">7:50a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t2">🎟️ Enter security &amp; tap into Epic Universe · Head directly to <strong>Super Nintendo World entrance</strong> — form up before 8:00 AM gate drop <span class="dc-badge b-new">NEW ✨</span></div>
+          <div class="dc-rt" id="dc-jul28-t2">🎟️ Enter security &amp; tap into Epic Universe · Head directly to <strong>Super Nintendo World entrance</strong> — line up 30 min before Early Entry (currently 9:00 AM — confirm in app) <span class="dc-badge b-new">NEW ✨</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t2',this)">✎</button>
       </div>
@@ -2026,7 +2038,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r8')"/>
         <div class="dc-time">9:10a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t8">🪄 <strong>Harry Potter and the Battle at the Ministry</strong> — flagship dark ride set in 1920s Paris Ministry of Magic · Major immersive adventure <span class="dc-badge b-ht">~40" min</div>
+          <div class="dc-rt" id="dc-jul28-t8">🪄 <strong>Battle at the Ministry</strong> — ⭐ T1 · <strong>VIRTUAL LINE ONLY</strong>: join in the app (~11 AM drop — Wi-Fi on, phones out at 10:55) · Explore 1920s wizarding Paris while you wait <span class="dc-badge b-ht">40" min</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t8',this)">✎</button>
       </div>
@@ -2044,7 +2056,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r10')"/>
         <div class="dc-time">10:15a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t10">🔭 <strong>Starfall Racers</strong> — Celestial Park · Dual launch coaster (signature ride of the entire park) <span class="dc-badge b-ht">54"+ min · Evan only / verify Grant</span> <span class="dc-badge b-new">NEW ✨</span> <span class="dc-badge b-tip">Line will be 60–120 min+ without EU Express</span></div>
+          <div class="dc-rt" id="dc-jul28-t10">🔭 <strong>Stardust Racers</strong> — Celestial Park · Dual launch coaster (signature ride of the entire park) <span class="dc-badge b-ht">48" min — ALL FIVE ride, Delaney newly unlocked 🎉</span> <span class="dc-badge b-new">NEW ✨</span> <span class="dc-badge b-tip">Line will be 60–120 min+ without EU Express</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t10',this)">✎</button>
       </div>
@@ -2053,7 +2065,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r11')"/>
         <div class="dc-time">10:20a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t11"><span class="dc-badge b-tip">💡 SPLIT TIP</span> Starfall Racers line is long · While Evan (+ Grant if tall enough) rides Starfall Racers, rest of family can re-ride Mario Kart or explore Celestial Park hub fountain area</div>
+          <div class="dc-rt" id="dc-jul28-t11"><span class="dc-badge b-tip">💡 SPLIT TIP</span> Stardust Racers line is long · Single Rider slashes it if you split up · Or: half re-rides Mario Kart while half rides Stardust, then swap</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t11',this)">✎</button>
       </div>
@@ -2083,7 +2095,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r14')"/>
         <div class="dc-time">11:50a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t14">💧 <strong>Thunder Falls Lagoon</strong> — water raft ride through Berk · Everyone gets soaked <span class="dc-badge b-ht">~36" min · pack a dry bag or ponchos</span></div>
+          <div class="dc-rt" id="dc-jul28-t14">🐉 <strong>The Untrainable Dragon</strong> — Berk's Broadway-scale stage show, Toothless on stage (30 min, AC) <span class="dc-badge b-tip">Delaney will lose her mind · great storm option</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t14',this)">✎</button>
       </div>
@@ -2116,7 +2128,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r17')"/>
         <div class="dc-time">1:45p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t17">🧛 <strong>Monsters Lair</strong> — dark ride through Dracula's castle · Whole-family dark ride adventure <span class="dc-badge b-ht">~36"+ min</div>
+          <div class="dc-rt" id="dc-jul28-t17">🧟 <strong>Monsters Unchained: The Frankenstein Experiment</strong> — intense KUKA-arm dark ride (her call) <span class="dc-badge b-ht">48" — Delaney newly unlocked 🎉</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t17',this)">✎</button>
       </div>
@@ -2125,7 +2137,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r18')"/>
         <div class="dc-time">2:20p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t18">🐺 <strong>Curse of the Werewolf</strong> — coaster through Monster lands <span class="dc-badge b-ht">~40"+ · Evan + Grant + Delaney (verify)</span> <span class="dc-badge b-new">NEW ✨</span></div>
+          <div class="dc-rt" id="dc-jul28-t18">🐺 <strong>Curse of the Werewolf</strong> — spinning coaster <span class="dc-badge b-ht">48" — all three kids clear it 🎉</span> <span class="dc-badge b-new">NEW ✨</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t18',this)">✎</button>
       </div>
@@ -2176,7 +2188,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r23')"/>
         <div class="dc-time">6:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t23">🍷 <strong>Café L'air de Paris</strong> — Ministry of Magic · French-themed table service · Unique immersive dining experience you won't find at any other park <span class="dc-badge b-ht">📅 Book ADR in advance</span> <span class="dc-badge b-new">NEW ✨</span></div>
+          <div class="dc-rt" id="dc-jul28-t23">🍷 <strong>Café L'Air De La Sirène</strong> — Ministry of Magic · French wizarding table service · Unique immersive dining experience you won't find at any other park <span class="dc-badge b-ht">📅 Book ADR in advance</span> <span class="dc-badge b-new">NEW ✨</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t23',this)">✎</button>
       </div>
@@ -2188,7 +2200,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul28-r24')"/>
         <div class="dc-time">7:30p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul28-t24">🔭 <strong>Starfall Racers — Night Ride</strong> · Waits drop at close · Visual spectacle at night <span class="dc-badge b-ht">54"+ min</div>
+          <div class="dc-rt" id="dc-jul28-t24">🔭 <strong>Stardust Racers — Night Ride</strong> · Waits drop at close · Visual spectacle at night <span class="dc-badge b-ht">48" — everyone rides 🎉</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul28-t24',this)">✎</button>
       </div>
@@ -2252,8 +2264,8 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-strat-val">3 intense park days down · Today is relaxed</div>
       </div>
       <div class="dc-strat-item">
-        <div class="dc-strat-label">TapuTapu System</div>
-        <div class="dc-strat-val"><strong>No waiting in physical lines</strong> — tap your TapuTapu wristband at the ride totem, get a return time, go relax until called · Revolutionary for families with small kids</div>
+        <div class="dc-strat-label">Queue Reality (updated)</div>
+        <div class="dc-strat-val"><strong>TapuTapu virtual lines were RETIRED Oct 2025</strong> — every slide is a normal standby line now · Strategy: use your 1-hr early entry to knock out the big drops (Ko'okiri, Kala &amp; Tai Nui, Krakatau) before 11, save wave pool + lazy river for the peak-wait afternoon</div>
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">EPA</div>
@@ -2265,7 +2277,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Height Notes</div>
-        <div class="dc-strat-val">Ko'okiri Body Plunge: 48" · Krakatau Aqua Coaster: 42" · Kala &amp; Tai Nui Serpentine Body Slides: 48" · Punga Racers: 42" · Delaney (est. ~48") may just qualify — confirm at park · Honu + ika Moana (tube slides): 42" · Runamukka Reef + Tot Tiki: any height</div>
+        <div class="dc-strat-val">Ko'okiri Body Plunge: 48" · Krakatau Aqua Coaster: 42" · Kala &amp; Tai Nui Serpentine Body Slides: 48" · Punga Racers: 42" · Delaney (est. ~48") may just qualify — confirm at park · ika Moana 42" / Honu 48" · Runamukka Reef + Tot Tiki: any height</div>
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Weather</div>
@@ -2299,7 +2311,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul29-r2')"/>
         <div class="dc-time">8:45a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul29-t2">🚌 Take Universal shuttle to Volcano Bay · EPA entry opens <strong>9:00 AM</strong> · Have TapuTapu wristbands ready at the gate · Confirm locker rental in app</div>
+          <div class="dc-rt" id="dc-jul29-t2">🚌 Take Universal shuttle to Volcano Bay · EPA entry opens <strong>9:00 AM</strong> · Rent a locker at the kiosks/app on arrival · Standby lines only — early hour is everything</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul29-t2',this)">✎</button>
       </div>
@@ -2308,7 +2320,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul29-r3')"/>
         <div class="dc-time">9:00a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul29-t3">🪑 <strong>Claim your spot</strong> — chairs near Krakatau volcano fill immediately at EPA · Drop towels/bags to reserve, then tap immediately for <strong>Ko'okiri Body Plunge</strong> return time <span class="dc-badge b-tip">💡 FIRST TAP</span></div>
+          <div class="dc-rt" id="dc-jul29-t3">🪑 <strong>Claim your spot</strong> — chairs near Krakatau volcano fill immediately at EPA · Drop towels/bags to reserve, then walk straight to <strong>Ko'okiri Body Plunge</strong> while lines are short <span class="dc-badge b-tip">💡 FIRST MOVE</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul29-t3',this)">✎</button>
       </div>
@@ -2335,7 +2347,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul29-r6')"/>
         <div class="dc-time">9:50a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul29-t6">🐚 <strong>Honu &amp; ika Moana Slides</strong> — massive wave bowl slides, ride on your back or in a tube · Great family experience <span class="dc-badge b-ht">42" min</div>
+          <div class="dc-rt" id="dc-jul29-t6">🐚 <strong>Honu &amp; ika Moana Slides</strong> — massive wave-wall raft slides <span class="dc-badge b-ht">ika Moana 42" · Honu 48" — Delaney clears both 🎉</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul29-t6',this)">✎</button>
       </div>
@@ -2429,7 +2441,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul29-r16')"/>
         <div class="dc-time">7:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul29-t16">🍹 Dinner at <strong>Jake's American Bar</strong> (Portofino Bay) — casual resort dining, burgers &amp; tropical drinks · Or CityWalk if you want a walk</div>
+          <div class="dc-rt" id="dc-jul29-t16">🍹 Dinner at <strong>Sal's Market Deli or Trattoria del Porto</strong> (Portofino) — casual resort dinner · Or CityWalk if you want a walk</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul29-t16',this)">✎</button>
       </div>
@@ -2438,7 +2450,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <div class="dc-leg"><div class="dc-leg-dot" style="background:#3B82F6;"></div> Attraction</div>
         <div class="dc-leg"><div class="dc-leg-dot" style="background:#27AE60;"></div> Dining</div>
         <div class="dc-leg"><div class="dc-leg-dot" style="background:#9CA3AF;"></div> Prep / Transit</div>
-        <div style="margin-left:auto; font-size:11px; color:#1a7a5e; font-weight:700;">🌋 TapuTapu = no standby lines · Tap early, relax, return when called</div>
+        <div style="margin-left:auto; font-size:11px; color:#1a7a5e; font-weight:700;">🌋 Standby lines only (TapuTapu retired) · Early entry = the big drops before the lines build</div>
       </div>
 
     </div><!-- /dc-body jul29 -->
@@ -2482,7 +2494,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">Anniversary Dinner</div>
-        <div class="dc-strat-val">Book <strong>Café L'air de Paris</strong> (Ministry of Magic) for tonight if not done Jul 28 — most romantic &amp; unique dining in the resort · Or consider The Chocolate Emporium at Epic for something sweet</div>
+        <div class="dc-strat-val">Tonight: <strong>Bice at Portofino ~7:30 PM</strong> ⚠️ book — harbor table + anniversary note, timed to the <strong>Musica della Notte</strong> piazza serenade · In-park anniversary LUNCH: Café L'Air De La Sirène</div>
       </div>
     </div>
 
@@ -2532,7 +2544,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r4')"/>
         <div class="dc-time">10:00a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t4">🗺️ <strong>Slow walk through Ministry of Magic</strong> — read the details, find the Easter eggs, explore the French wizarding architecture · Stephen &amp; Melissa: grab a Café L'air coffee and just take it in 🎂</div>
+          <div class="dc-rt" id="dc-jul30-t4">🗺️ <strong>Slow walk through Ministry of Magic</strong> — read the details, find the Easter eggs, explore the French wizarding architecture · Stephen &amp; Melissa: grab a Café L'Air coffee and just take it in 🎂</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t4',this)">✎</button>
       </div>
@@ -2541,7 +2553,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r5')"/>
         <div class="dc-time">10:45a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t5">🧛 <strong>Monsters Lair — Re-ride</strong> · Second ride you catch so much more of the story</div>
+          <div class="dc-rt" id="dc-jul30-t5">🧟 <strong>Monsters Unchained — re-ride</strong> (or Delaney's first, if she passed on Day 1) · You catch so much more the second time</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t5',this)">✎</button>
       </div>
@@ -2550,7 +2562,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r6')"/>
         <div class="dc-time">11:15a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t6">🐺 <strong>Curse of the Werewolf</strong> — if anyone skipped or wants a re-ride · Less busy mid-morning than peak afternoon <span class="dc-badge b-ht">40"+ min</span></div>
+          <div class="dc-rt" id="dc-jul30-t6">🐺 <strong>Curse of the Werewolf</strong> — re-ride, less busy mid-morning <span class="dc-badge b-ht">48" — all kids</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t6',this)">✎</button>
       </div>
@@ -2561,7 +2573,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r7')"/>
         <div class="dc-time">12:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t7">🍷 <strong>Anniversary Lunch — Café L'air de Paris</strong> · Immersive French dining in the Ministry of Magic world · Book in advance</div>
+          <div class="dc-rt" id="dc-jul30-t7">🍷 <strong>Anniversary Lunch — Café L'Air De La Sirène</strong> · Immersive French wizarding dining ⚠️ book in the app</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t7',this)">✎</button>
       </div>
@@ -2590,7 +2602,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r10')"/>
         <div class="dc-time">2:30p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t10">💧 <strong>Thunder Falls Lagoon</strong> — cooler option in afternoon heat · Afternoon storms hit ~2:30 PM so the water ride is perfectly timed · Everyone soaked = no complaints <span class="dc-badge b-ht">36" min</span></div>
+          <div class="dc-rt" id="dc-jul30-t10">🔥 <strong>Fyre Drill</strong> — Berk's water-blaster boat battle, you WILL get wet · perfect in the afternoon heat <span class="dc-badge b-ht">40" min</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t10',this)">✎</button>
       </div>
@@ -2619,7 +2631,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul30-r13')"/>
         <div class="dc-time">5:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul30-t13">🔭 <strong>Starfall Racers final ride</strong> — if Evan or Grant want one more shot before leaving Epic Universe for good this trip · Night ride if you stay until close</div>
+          <div class="dc-rt" id="dc-jul30-t13">🔭 <strong>Stardust Racers final ride</strong> — whole family can now (48") — if anyont want one more shot before leaving Epic Universe for good this trip · Night ride if you stay until close</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul30-t13',this)">✎</button>
       </div>
@@ -2694,7 +2706,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul31-r0')"/>
         <div class="dc-time">6:30a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul31-t0">📱 <strong>OPEN UNIVERSAL APP</strong> — Hagrid's virtual queue drops at 7:00 AM and 2:00 PM · Be on the app at <strong>exactly 7:00 AM</strong> · All 5 family members in the same virtual queue booking <span class="dc-badge b-ep" style="background:#FEE2E2;color:#991B1B;">CRITICAL</span></div>
+          <div class="dc-rt" id="dc-jul31-t0">📱 <strong>OPEN UNIVERSAL APP</strong> — Check the app: Hagrid's usually runs STANDBY (rope-drop via 8 AM early entry) — if a Virtual Line IS active today, grab a group at open, all 5 in one booking <span class="dc-badge b-ep" style="background:#FEE2E2;color:#991B1B;">CRITICAL</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul31-t0',this)">✎</button>
       </div>
@@ -2730,7 +2742,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul31-r4')"/>
         <div class="dc-time">9:30a</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul31-t4">🦖 <strong>VelociCoaster</strong> <span class="dc-badge b-ep">Express Pass</span> · Evan's favorite · If Grant cleared 51" earlier this trip, he joins <span class="dc-badge b-ht">51" min</span></div>
+          <div class="dc-rt" id="dc-jul31-t4">🦖 <strong>VelociCoaster</strong> <span class="dc-badge b-ep">Express Pass</span> · Evan + Grant (he clears 51") · Delaney: Rider Swap · <span class="dc-badge b-ht">51" min</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul31-t4',this)">✎</button>
       </div>
@@ -2795,7 +2807,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul31-r11')"/>
         <div class="dc-time">2:15p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul31-t11">🛍️ <strong>Universal Studios shopping + snacks</strong> · Hollywood area stores, park-exclusive merchandise · Rip Ride Rockit is there if Evan wants one more run <span class="dc-badge b-ep">Express Pass if riding</span> <span class="dc-badge b-ht">51" min</span></div>
+          <div class="dc-rt" id="dc-jul31-t11">🛍️ <strong>Universal Studios shopping + snacks</strong> · Hollywood area stores, park-exclusive merchandise · Catch the Horror Make-Up Show if timing works (Rockit closed permanently)</div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul31-t11',this)">✎</button>
       </div>
@@ -2833,7 +2845,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
         <input class="dc-cb" type="checkbox" onchange="dcCheck(this,'dc-jul31-r15')"/>
         <div class="dc-time">8:00p</div>
         <div class="dc-content">
-          <div class="dc-rt" id="dc-jul31-t15">🧳 Back to Portofino Bay · <strong>PACK EVERYTHING TONIGHT</strong> · Checkout tomorrow (Aug 1) morning · Disney's BoardWalk Inn check-in starts tomorrow · Express Passes go back to Bell Desk at checkout <span class="dc-badge b-tip">⚠️ IMPORTANT: pack tonight</span></div>
+          <div class="dc-rt" id="dc-jul31-t15">🧳 Back to Portofino Bay · <strong>PACK EVERYTHING TONIGHT</strong> · Checkout tomorrow (Aug 1) morning · Disney's BoardWalk Inn check-in starts tomorrow · Express works through checkout day — tomorrow's victory-lap morning is covered <span class="dc-badge b-tip">⚠️ IMPORTANT: pack tonight</span></div>
         </div>
         <button class="dc-eb" onclick="dcEdit('dc-jul31-t15',this)">✎</button>
       </div>
@@ -2884,7 +2896,7 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">7 AM Disney Planning</div>
-        <div class="dc-strat-val">Starting tomorrow, set a <strong>7:00 AM alarm every Disney morning</strong> — that's when Lightning Lane booking opens for resort guests · Book top rides immediately at 7 AM on each park day</div>
+        <div class="dc-strat-val" data-x="1">Whole-week Lightning Lanes were bookable <strong>Jul 25</strong> (7-day resort window) · Tonight: review selections in MDE · 7 AM day-of = re-rides &amp; upgrades only</div>
       </div>
       <div class="dc-strat-item">
         <div class="dc-strat-label">My Disney Experience</div>
@@ -4477,6 +4489,128 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
 </main>
 </div><!-- /tab-planner -->
 
+<div id="tab-tips" class="tab-pane">
+<main>
+  <div class="planner-intro">
+    <h2>💡 Trip Tips &amp; Action Items <button class="pd-showall" style="float:right" onclick="printTips()">🖨️ Print this page</button></h2>
+    <p>Condensed from 30+ of Carol Gallo's pre-trip emails (May 3 – Jul 10, 2026) · Deadlines first, then Universal week, then Disney week.</p>
+  </div>
+
+  <div class="dc-card" style="border-left:6px solid #DC2626;">
+    <div class="dc-header" style="background:linear-gradient(135deg,#7F1D1D,#DC2626);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">⚠️ Action Items &amp; Deadlines — Stephen, review these</div></div></div>
+    <div class="dc-body" style="padding:14px 20px;">
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Sat Jul 25, 7:00 AM ET — the biggest deadline of the trip.</strong> Your Disney <strong>Lightning Lane Advance Booking Window</strong> opens (7 days before Aug 1 check-in, resort-guest perk). Book the ENTIRE Disney week in one sitting — from the airport gate if needed: <strong>Flight of Passage ILL (Aug 2 + Aug 7) · TRON ILL (Aug 4) · Rise of the Resistance ILL (Aug 5) · Guardians ILL (Aug 8) + Multi Pass picks for every day</strong>. Off-site families only get 3 days — this is your head start. The 7 AM day-of routine is now just for re-rides and upgrades.</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Book the Fantasmic! Dining Package NOW</strong> — Sci-Fi Dine-In lunch Aug 5 = guaranteed reserved seats for the must-do show. disneyworld.com or (407) WDW-DINE.</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Universal dining: nothing is booked.</strong> Grab 1–2 sit-downs in the Universal app: Mythos (IOA, lunch) and/or Cowfish (CityWalk).</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>MagicBands+:</strong> too late to ship new ones — charge your existing MagicBand+ bands (Carol confirmed they work) or buy at the resort Aug 1.</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Jul 25 at Portofino check-in:</strong> ① confirm Kingdom Strollers delivery (order #673967) at Bell Services · ② pick up My Universal Photos IN PERSON at the Vacation Planning Center (conf UO52K159-2UPRV) · ③ request the roll-away cot ($35/night, not reservable ahead).</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Ask Carol:</strong> the paid Disney confirmation mentions a "FREE Delicious Deal" — confirm whether the package includes a Dining Promo Card and how to redeem it.</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Memory Maker is included</strong> — link all 5 family members in MDE before Aug 1. At Universal, activate the 5-day photo package on Day 1 so it covers through Jul 29.</div>
+      <div class="dc-warn2" style="margin:6px 0;"><strong>Print the free scavenger hunts for Grant &amp; Delaney</strong> — you flagged this yourself Jun 12 (Carol's "Fun &amp; Free WDW Activities" email has the link + password).</div>
+    </div>
+  </div>
+
+  <div class="dc-card" style="border-left:6px solid #059669;">
+    <div class="dc-header" style="background:linear-gradient(135deg,#064E3B,#059669);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">💰 Lightning Lane Budget Plan — one Multi Pass per park</div></div></div>
+    <div class="dc-body" style="padding:14px 20px;">
+      <div class="dc-rt" style="padding:5px 0;">All 7 Disney days of LLMP for 5 people runs roughly <strong>$900–1,200</strong>. One-per-park gets the same headliners for <strong>~$400–700</strong>:</div>
+      <div class="dc-flag2" style="margin:8px 0;">✅ <strong>BUY — Aug 2 (Animal Kingdom #1):</strong> Everest, Kali, Safari taps on your freshest AK day. FoP is a separate ILL either way.</div>
+      <div class="dc-flag2" style="margin:8px 0;">✅ <strong>BUY — Aug 4 (Magic Kingdom #1):</strong> biggest ride day of the week around BBB — Seven Dwarfs, Peter Pan, Jungle Cruise, Tiana’s. TRON is a separate ILL.</div>
+      <div class="dc-flag2" style="margin:8px 0;">✅ <strong>BUY — Aug 5 (Hollywood Studios):</strong> Slinky, Tower, Runaway Railway before Fantasmic. Rise is a separate ILL.</div>
+      <div class="dc-flag2" style="margin:8px 0;">🤔 <strong>OPTIONAL — Aug 3 (EPCOT):</strong> the honest skip. Your Monday <strong>Extended Evening Hours (9–11 PM)</strong> ride Guardians/Test Track/Frozen with 10-min waits — free. Buy only if you want the daytime covered too.</div>
+      <div class="dc-warn2" style="margin:8px 0;">❌ <strong>SKIP — Aug 6</strong> (MK repeat: characters, parades, 8 AM-breakfast head start, evening standby) · <strong>Aug 7</strong> (relaxed AK repeat; FoP via ILL) · <strong>Aug 8</strong> (two half-days; Guardians via ILL).</div>
+      <div class="dc-rt" style="padding:5px 0;">ILLs are one-off purchases regardless of LLMP: <strong>FoP ×2 · TRON · Rise · Guardians</strong>. Book everything in the single 7 AM session on <strong>Jul 25</strong>.</div>
+    </div>
+  </div>
+
+  <div class="dc-card" style="border-left:6px solid #F59E0B;">
+    <div class="dc-header" style="background:linear-gradient(135deg,#78350F,#F59E0B);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">🍽️ Dining at a Glance — the whole trip</div></div></div>
+    <div class="dc-body" style="padding:12px 16px;">
+      <div class="rl-legend" style="border:none;background:transparent;padding:4px 2px 8px;">✅ booked · 📋 planned · 🟡 suggestion · ⚠️ reservation still needed · Unlisted breakfasts = cereal/bars in the room · Ask Carol: 2026 kids-eat-free promo may cover Delaney (age 3–9) at several of these.</div>
+      <table class="meal-table">
+        <tr><th>Day / Park</th><th>Breakfast</th><th>Lunch</th><th>Dinner</th></tr>
+        <tr class="mt-uni"><td>Jul 25 · Arrival</td><td>✈️ Airport</td><td>🟡 Sal's Market Deli on arrival</td><td>🟡 Trattoria del Porto — easy first night</td></tr>
+        <tr class="mt-uni"><td>Jul 26 · USF</td><td>📋 Sal's grab-and-go</td><td>🟡 Leaky Cauldron (mobile order)</td><td>🟡 Cowfish, CityWalk</td></tr>
+        <tr class="mt-uni"><td>Jul 27 · IOA</td><td>🥣 Room</td><td id="meal-mythos">✅ <strong>Mythos</strong> — time TBC (Melissa has the confirmation)</td><td>🟡 Three Broomsticks early, or CityWalk</td></tr>
+        <tr class="mt-uni"><td>Jul 28 · Epic</td><td>🥣 Room (early EPA)</td><td>🟡 Toadstool Cafe (SNW) or Mead Hall</td><td>🟡 Easy night — CityWalk or hotel</td></tr>
+        <tr class="mt-uni"><td>Jul 29 · Volcano Bay</td><td>🥣 Room</td><td>🟡 Kohola Reef</td><td>🟡 Portofino piazza — Sal's casual</td></tr>
+        <tr class="mt-uni"><td>Jul 30 · Epic 🎂</td><td>📋 Hotel breakfast together</td><td>🍷 Café L'Air De La Sirène (Ministry) — anniversary lunch ⚠️ book</td><td>🎂 <strong>Bice at Portofino</strong> ⚠️ book — harbor table + anniversary note, timed to the Musica della Notte piazza serenade · option: adults-only while Evan runs pizza night</td></tr>
+        <tr class="mt-uni"><td>Jul 31 · USF + IOA</td><td>🥣 Room</td><td>🟡 Three Broomsticks</td><td>🟡 Toothsome — dessert finale</td></tr>
+        <tr class="mt-uni"><td>Aug 1 · Swap day</td><td>📋 Sal's grab-and-go</td><td>📋 Quick in-park / CityWalk</td><td>✅ <strong>Story Book Dining, Artist Point 7:00 PM</strong></td></tr>
+        <tr class="mt-dis"><td>Aug 2 · Animal Kingdom</td><td>🥣 Room (early bus)</td><td>✅ <strong>Tusker House 2:00 PM</strong> (snack-only morning)</td><td>🟡 Light — BoardWalk Pizza Window</td></tr>
+        <tr class="mt-dis"><td>Aug 3 · EPCOT</td><td>🥣 Room</td><td>🟡 Regal Eagle BBQ or Sunshine Seasons</td><td>✅ <strong>Space 220, 6:55 PM</strong> → Luminous → EEH</td></tr>
+        <tr class="mt-dis"><td>Aug 4 · MK / BBB</td><td>🥣 Room</td><td>🟡 Columbia Harbour House</td><td>🟡 QS night — Pecos Bill / Cosmic Ray's (10 PM HEA)</td></tr>
+        <tr class="mt-dis"><td>Aug 5 · HS / Fantasmic</td><td>🥣 Room</td><td>📋 <strong>Sci-Fi Dine-In</strong> ⚠️ book as Fantasmic package</td><td>📋 Woody's Lunch Box light</td></tr>
+        <tr class="mt-dis"><td>Aug 6 · MK</td><td>✅ <strong>Crystal Palace 8:00 AM</strong></td><td>🟡 Sleepy Hollow — Nutella waffle, castle-view patio</td><td>🟡 Plaza walk-up or Cosmic Ray's before Starlight/HEA</td></tr>
+        <tr class="mt-dis"><td>Aug 7 · AK + Springs</td><td>🥣 Room</td><td>📋 Flame Tree BBQ</td><td>📋 Springs casual — Chicken Guy / Blaze / Raglan Road</td></tr>
+        <tr class="mt-dis"><td>Aug 8 · HS → EPCOT</td><td>🥣 Room</td><td>📋 Docking Bay 7 (or Oga's ⚠️ res)</td><td>⚠️ <strong>World Showcase finale — Chefs de France / Tutto Italia / Tokyo Dining — BOOK THIS WEEK</strong></td></tr>
+        <tr class="mt-dis"><td>Aug 9 · Fly home</td><td>📋 MCO airside B — GastroHub or Zaza (~7:45)</td><td>📋 PHL on landing ~11:15 — Chickie's &amp; Pete's</td><td>🏠 Home</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="dc-card" style="border-left:6px solid #6D28D9;">
+    <div class="dc-header" style="background:linear-gradient(135deg,#312E81,#6D28D9);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">🌙 Nighttime Shows — end every park day right</div></div></div>
+    <div class="dc-body" style="padding:14px 20px;">
+      <div class="dc-rt" style="padding:5px 0;">🏰 <strong>Magic Kingdom:</strong> Disney Starlight parade ~9:00 PM → <strong>Happily Ever After</strong> fireworks ~10:00 PM (summer schedule) · Your nights: <strong>Aug 4 &amp; Aug 6</strong> · Stake the curb by 8:30; when Starlight runs twice, HEA sits between shows.</div>
+      <div class="dc-rt" style="padding:5px 0;">🌍 <strong>EPCOT:</strong> <strong>Luminous: The Symphony of Us</strong> ~9:00 PM on World Showcase Lagoon · Your nights: <strong>Aug 3</strong> (then EEH rides until 11 — double feature) and <strong>Aug 8 finale</strong> (UK/France waterfront, 5-min walk home after).</div>
+      <div class="dc-rt" style="padding:5px 0;">🎬 <strong>Hollywood Studios:</strong> <strong>Fantasmic!</strong> ~9:00/9:30 PM (some nights add a 2nd show) · Your night: <strong>Aug 5</strong> — the dining package = reserved seats, and the hard rule is on the day card: rides stop at 8:00 PM. Backup shot: Aug 8 evening via Friendship Boat.</div>
+      <div class="dc-rt" style="padding:5px 0;">🦁 <strong>Animal Kingdom:</strong> No fireworks (the animals) — <strong>Tree of Life Awakenings</strong> projections repeat ~every 10 min after dark IF the park is open late; it usually closes 6–8 PM · That's why your AK evenings point elsewhere (pool Aug 2, Disney Springs Aug 7).</div>
+      <div class="dc-warn2" style="margin:8px 0;"><strong>House rule:</strong> stop joining ride lines 60 minutes before any show you care about. Exact times post in MDE each morning — check them during the 7 AM coffee.</div>
+    </div>
+  </div>
+
+  <div class="dc-card">
+    <div class="dc-header" style="background:linear-gradient(135deg,#7F1D1D,#C8102E);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">🔴 Universal Week — Carol's Tips (Jul 25–Aug 1)</div></div></div>
+    <div class="dc-body" style="padding:10px 20px 16px;">
+      <div class="dc-rt" style="padding:5px 0;">🏊 <strong>Pool hopping (7/10):</strong> Premier-hotel guests can use the pools at ALL Loews Universal hotels — Portofino's Beach Pool plus Royal Pacific's lagoon pool are both yours.</div>
+      <div class="dc-rt" style="padding:5px 0;">🥤 <strong>Refillable cups (7/10):</strong> One cup works at Coca-Cola Freestyle machines in all 4 parks — buy Day 1, cheap refills all week.</div>
+      <div class="dc-rt" style="padding:5px 0;">📱 <strong>Mobile ordering (7/7):</strong> Order lunch in the Universal app from a ride queue — skip the register line.</div>
+      <div class="dc-rt" style="padding:5px 0;">🚪 <strong>Early Park Admission (7/6):</strong> 1 hour early — Wizarding World, Volcano Bay, Epic. Your biggest weapon on the no-Express Epic days.</div>
+      <div class="dc-rt" style="padding:5px 0;">🎭 <strong>Wizarding World extras (7/2, 6/20):</strong> Ollivanders wand show, Knight Bus conductor, Celestina Warbeck, Kreacher in the window, the talking Gringotts goblin — free entertainment most people walk past.</div>
+      <div class="dc-rt" style="padding:5px 0;">🧍 <strong>Single Rider (6/28):</strong> Free line-skip where Express doesn't apply — huge at Epic (Stardust, Mario Kart).</div>
+      <div class="dc-rt" style="padding:5px 0;">🚤 <strong>Getting around (6/20, 5/17):</strong> Water taxis + garden paths from Portofino; boats run continuously and beat the shuttle at rope drop.</div>
+      <div class="dc-rt" style="padding:5px 0;">🏦 <strong>Gringotts bank notes (6/18):</strong> Exchange money at the Gringotts Money Exchange — notes spend like gift cards park-wide, great souvenir for Delaney.</div>
+      <div class="dc-rt" style="padding:5px 0;">🍺 <strong>Butterbeer (6/11):</strong> Cold, frozen, hot, ice cream — frozen wins in August. Both Wizarding Worlds + Leaky Cauldron.</div>
+      <div class="dc-rt" style="padding:5px 0;">🎢 <strong>VelociCoaster (6/10):</strong> 70 mph, 2 launches — Evan + Grant's headline (51": Delaney sits out — Rider Swap + Single Rider combo).</div>
+      <div class="dc-rt" style="padding:5px 0;">🪄 <strong>Interactive wands (6/6):</strong> ~$85; spell spots marked on the wand map. One shared wand for Grant + Delaney keeps peace and budget.</div>
+      <div class="dc-rt" style="padding:5px 0;">🤫 <strong>Quiet Room (5/30):</strong> Sensory-break rooms at Guest Services — a reset button for Delaney on overstimulating days.</div>
+      <div class="dc-rt" style="padding:5px 0;">🍽️ <strong>CityWalk + hotel dining (5/23, 5/21):</strong> Cowfish (burger-sushi mashup) is the family pick; Sal's Market Deli at Portofino for easy dinners.</div>
+      <div class="dc-rt" style="padding:5px 0;">🌋 <strong>Volcano Bay:</strong> TapuTapu was RETIRED Oct 2025 — all slides run normal standby lines now. Use the 1-hr early entry for the big drops first. Towels free; one family locker.</div>
+    </div>
+  </div>
+
+  <div class="dc-card">
+    <div class="dc-header" style="background:linear-gradient(135deg,#0d1b4b,#1a3a8a);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">🔵 Disney Week — Carol's Tips (Aug 1–9)</div></div></div>
+    <div class="dc-body" style="padding:10px 20px 16px;">
+      <div class="dc-rt" style="padding:5px 0;">⚡ <strong>Lightning Lane strategy (6/10, 5/3):</strong> Multi Pass = 3 pre-booked rides per park, rebook each as you tap in; Single Pass (ILL) = the headliners. Buy it ALL in one 7 AM session Jul 25 — see Action Items.</div>
+      <div class="dc-rt" style="padding:5px 0;">🛒 <strong>Grocery delivery (7/7, 6/30):</strong> Garden Grocer / Instacart deliver to BoardWalk Bell Services — room breakfasts + water save real money with 5 people.</div>
+      <div class="dc-rt" style="padding:5px 0;">🔌 <strong>Tech prep (6/19):</strong> A battery pack per adult (MDE drains phones), labeled chargers, offline maps + Disney+ downloads for the flight home.</div>
+      <div class="dc-rt" style="padding:5px 0;">🆓 <strong>Free stuff (6/12):</strong> Scavenger hunts (print first!), celebration buttons at Guest Relations (anniversary + first-visit), monorail/Skyliner loop as evening entertainment.</div>
+      <div class="dc-rt" style="padding:5px 0;">🍔 <strong>Quick service picks (5/28):</strong> Satu'li Canteen (AK) · Regal Eagle BBQ (EPCOT) · Docking Bay 7 (HS) · Columbia Harbour House (MK).</div>
+      <div class="dc-rt" style="padding:5px 0;">✨ <strong>Unique dining (5/25):</strong> You booked the best ones — Space 220, Story Book Dining, Tusker House, Crystal Palace. Sci-Fi Dine-In completes the set via the Fantasmic package.</div>
+      <div class="dc-rt" style="padding:5px 0;">🗺️ <strong>Maps + hours (5/30):</strong> Built into every day card (🗺️ chip = PDF map, 🕘 chip = live hours) — plus MDE day-of.</div>
+      <div class="dc-rt" style="padding:5px 0;">🎃 <strong>MNSSHP (5/5):</strong> Party season starts mid-trip (first party Aug 7, Tue/Fri/Sun) — you planned around it; Aug 6 is a full normal MK night.</div>
+    </div>
+  </div>
+</main>
+</div><!-- /tab-tips -->
+
+<div id="tab-pack" class="tab-pane">
+<main>
+  <div class="planner-intro">
+    <h2>🧳 Packing List <button class="pd-showall" style="float:right" onclick="printPack()">🖨️ Print this page</button></h2>
+    <p>☑ = packed · <b>−</b> = not bringing (stays visible) · checks save on this device · Built for August Florida: daily storms, two hotels, one water park day, one princess, and a 5:30 AM final wake-up.</p>
+  </div>
+  <div class="dc-card">
+    <div class="dc-header" style="background:linear-gradient(135deg,#0F766E,#14B8A6);cursor:default;"><div class="dc-header-left"><div class="dc-header-park">🧳 O’Connor Family — Trip Packing Checklist</div></div></div>
+    <div class="dc-body"><div class="rl-body" style="padding:6px 16px 14px;"><div class="rl-land-blk"><div class="rl-land">📄 Documents & Money</div><div class="rl-row" data-rid="pk-photo-ids---driver-s-licenses"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Photo IDs / driver’s licenses</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-magicband--bands--5--charged-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">MagicBand+ bands ×5 (CHARGED)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-credit-cards---some-cash"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Credit cards + some cash</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-printed-e-travel-doc--conf-uo52k159-2upr"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Printed E-Travel Doc (conf UO52K159-2UPRV)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-kingdom-strollers-confirmation---673967-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Kingdom Strollers confirmation (#673967)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-printed-itinerary---tips-pages--this-too"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Printed itinerary + Tips pages (this tool!)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-insurance-cards"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Insurance cards</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-scavenger-hunt-printouts--grant---delane"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Scavenger hunt printouts (Grant & Delaney)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">🔌 Tech</div><div class="rl-row" data-rid="pk-phones---chargers--labeled-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Phones + chargers (labeled)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-battery-pack-per-adult--7-am-bookings-dr"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Battery pack per adult (7 AM bookings drain phones)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-charging-block---multi-port-cube"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Charging block / multi-port cube</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-kids--tablets---headphones-for-flights"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Kids’ tablets + headphones for flights</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-download--universal-app--mde--disney--of"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Download: Universal app, MDE, Disney+ offline</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-apple-airtags-in-checked-bags"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Apple AirTags in checked bags</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">🎒 Daily Park Bag</div><div class="rl-row" data-rid="pk-ponchos--5--daily-storms--"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Ponchos ×5 (daily storms!)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-refillable-water-bottles"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Refillable water bottles</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-sunscreen--spray---face-stick-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Sunscreen (spray + face stick)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-cooling-towels"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Cooling towels</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-portable-fan--stroller-clip-for-delaney-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Portable fan (stroller clip for Delaney)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-ziploc-dry-bags-for-phones--water-rides-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Ziploc/dry bags for phones (water rides)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-band-aids---moleskin--blisters-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Band-aids + moleskin (blisters)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-hand-sanitizer---wipes"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Hand sanitizer + wipes</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-snacks--park-prices-are-the-real-thrill-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Snacks (park prices are the real thrill ride)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-autograph-book---fat-pen--character-chec"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Autograph book + fat pen (character checklists!)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">👕 Clothes (16 days — BoardWalk has laundry)</div><div class="rl-row" data-rid="pk-shirts-shorts--8-days---laundry-mid-trip"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Shirts/shorts ~8 days + laundry mid-trip</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-underwear---socks--extra-socks---wet-fee"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Underwear + socks (extra socks — wet feet)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-broken-in-walking-shoes--2-pairs-each"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Broken-in walking shoes ×2 pairs each</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-water-sandals-crocs--water-rides---pool-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Water sandals/Crocs (water rides + pool)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-light-rain-jacket-or-extra-poncho"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Light rain jacket or extra poncho</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-one-nicer-outfit-each--bice-----space-22"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">One nicer outfit each (Bice 🎂 + Space 220)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-delaney--princess-dress-for-bbb-day--aug"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Delaney: princess dress for BBB day (Aug 4)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-pajamas"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Pajamas</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-hats---sunglasses"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Hats + sunglasses</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">🏊 Swim & Water</div><div class="rl-row" data-rid="pk-swimsuits--2-each--one-s-always-wet-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Swimsuits ×2 each (one’s always wet)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-swim-shirts---rash-guards--kids-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Swim shirts / rash guards (kids)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-goggles"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Goggles</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-waterproof-phone-pouches"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Waterproof phone pouches</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-beach-bag-for-volcano-bay-day--jul-29-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Beach bag for Volcano Bay day (Jul 29)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-delaney-puddle-jumper-if-she-uses-one"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Delaney puddle jumper if she uses one</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">💊 Health & Toiletries</div><div class="rl-row" data-rid="pk-prescriptions--in-carry-on--"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Prescriptions (in carry-on!)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-kids--pain-reliever---adult"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Kids’ pain reliever + adult</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-motion-sickness-remedies--mario-kart-fal"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Motion sickness remedies (Mario Kart/Falcon are screens)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-allergy-meds"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Allergy meds</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-toiletries-kit"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Toiletries kit</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-anti-chafe-stick--august-miles-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Anti-chafe stick (August miles)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-aloe--someone-will-burn-"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Aloe (someone will burn)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div><div class="rl-land-blk"><div class="rl-land">🔄 Swap-Day & Logistics (Aug 1)</div><div class="rl-row" data-rid="pk-pack-a--transfer-day-bag---swimsuits---1"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Pack a “transfer day bag”: swimsuits + 1 outfit accessible</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-keep-park-tickets-phones-on-you--express"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Keep park tickets/phones ON you (Express valid all morning)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-stroller-goes-in-the-uber-with-you"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Stroller goes in the Uber with you</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-overnight-bag-packed-the-night-before--j"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Overnight bag packed the night before (Jul 31)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div><div class="rl-row" data-rid="pk-leave-room-for-souvenirs--or-pack-a-fold"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">Leave room for souvenirs (or pack a foldable duffel)</span></label><button class="rl-skip" title="Not bringing" onclick="rlSkip(this)">−</button></div></div></div></div>
+  </div>
+</main>
+</div><!-- /tab-pack -->
+
+
+
 <script>
 // ── TAB NAVIGATION ──
 // ── TAB GATE: planner is public; the 4 data tabs need the family password ──
@@ -4774,21 +4908,21 @@ filterRef();
 var TD='https://www.thrill-data.com', DM='https://disneyworld.disney.go.com/maps', UM='https://www.universalorlando.com/web/en/us/plan-your-visit/hours-information/maps';
 function tw(s){return TD+'/waittimes/'+s} function tc(s){return TD+'/trip-planning/crowd-calendar/'+s} function ph(s){return TD+'/park-hours/'+s}
 var DAY_META=[
-{k:'jul25',d:'Sat',n:'Jul 25',p:'Arrival',i:'✈️',hrs:'Travel day · PHL → MCO → Portofino Bay',warn:['Kingdom Strollers delivers the rental stroller to Portofino Bell Services today (order #673967) — confirm at check-in.','Pick up My Universal Photos IN PERSON at the Vacation Planning Center (conf UO52K159-2UPRV) · Request roll-away cot ($35/night).'],flag:[]},
-{k:'jul26',d:'Sun',n:'Jul 26',p:'Universal Studios',i:'🎬',hrs:'≈10 AM – 9 PM',ep:'Early entry ≈9 AM (Wizarding World)',cr:7,s:'universal-studios-florida',m:'U',rk:['usf'],warn:['Delaney @48\": everything here is a GO except Rip Ride Rockit (51\") — Revenge of the Mummy (48\") newly unlocked 🎉'],flag:[]},
+{k:'jul25',d:'Sat',n:'Jul 25',p:'Arrival',i:'✈️',hrs:'Travel day · PHL → MCO → Portofino Bay',warn:['⏰ 7:00 AM TODAY (travel day!): Disney Lightning Lane window opens — book the WHOLE Disney week (FoP ×2, TRON, Rise, Guardians ILLs + Multi Pass for your 3–4 chosen days — 💰 budget plan in Tips) from the airport.','Kingdom Strollers delivers the rental stroller to Portofino Bell Services today (order #673967) — confirm at check-in.','Pick up My Universal Photos IN PERSON at the Vacation Planning Center (conf UO52K159-2UPRV) · Request roll-away cot ($35/night).'],flag:[]},
+{k:'jul26',d:'Sun',n:'Jul 26',p:'Universal Studios',i:'🎬',hrs:'≈10 AM – 9 PM',ep:'EPA 1 hr pre-open — which park varies (often IOA-only): confirm in app tonight',cr:7,s:'universal-studios-florida',m:'U',rk:['usf'],warn:['Delaney @48\": everything here is a GO — Revenge of the Mummy (48\") newly unlocked 🎉'],flag:['Don’t-skip pair: E.T. Adventure (the 1990 classic, Delaney-perfect) + Villain-Con Minion Blast — both on the checklist below.']},
 {k:'jul27',d:'Mon',n:'Jul 27',p:'Islands of Adv.',i:'🦖',hrs:'≈9 AM – 9 PM',ep:'Early entry ≈8 AM',cr:6,s:'islands-of-adventure',m:'U',rk:['ioa'],warn:['Delaney @48\": Hagrid’s + Forbidden Journey newly unlocked 🎉 · Still out: VelociCoaster (51\"), Dr. Doom (52\"), Hulk (54\") — use Rider Swap'],flag:[]},
-{k:'jul28',d:'Tue',n:'Jul 28',p:'Epic Universe',i:'🌌',hrs:'≈10 AM – 9 PM',ep:'Early entry 9 AM (hotel perk)',cr:9,s:'epic-universe',m:'U',rk:['epic'],warn:['Delaney @48\": ALL of Epic is a GO — Stardust Racers, Monsters Unchained, Werewolf 🎉','No Express Pass at Epic — your two weapons are 9 AM early entry and the ~11 AM Ministry of Magic virtual-line drop (be on Wi-Fi, not in a ride queue, phones out at 10:55).'],flag:[]},
+{k:'jul28',d:'Tue',n:'Jul 28',p:'Epic Universe',i:'🌌',hrs:'≈10 AM – 9 PM',ep:'Early entry 9 AM (hotel perk)',cr:9,s:'epic-universe',m:'U',rk:['epic'],warn:['Delaney @48\": ALL of Epic is a GO — Stardust Racers, Monsters Unchained, Werewolf 🎉','No Express Pass at Epic — your two weapons are 9 AM early entry and the ~11 AM Ministry of Magic virtual-line drop (be on Wi-Fi, not in a ride queue, phones out at 10:55).'],flag:['CROWD REALITY: Epic runs ~9/10 — you will NOT do everything. Tier 1 today: ① Ministry virtual line (11 AM) ② Monsters Unchained ③ Mario Kart ④ Donkey Kong ⑤ Hiccup’s Wing Gliders. Tier 2 (Stardust, Yoshi, Werewolf, Fyre Drill, carousel) = bonus, or Day 2.']},
 {k:'jul29',d:'Wed',n:'Jul 29',p:'Volcano Bay',i:'🌋',hrs:'≈10 AM – 8 PM',ep:'Early entry 1 hr (hotel perk)',cr:5,s:'volcano-bay',m:'U',rk:['vb'],warn:['Delaney @48\": drop-capsule + big serpentine slides newly unlocked 🎉 (48\" checks at each slide)'],flag:[]},
-{k:'jul30',d:'Thu',n:'Jul 30',p:'Epic · Anniv. 🎂',i:'🌌',hrs:'≈10 AM – 9 PM',ep:'Early entry 9 AM (hotel perk)',cr:9,s:'epic-universe',m:'U',rk:['epic'],warn:['Second Epic day in 3 — pace it. Anniversary dinner tonight; build in a midday break.'],flag:[]},
+{k:'jul30',d:'Thu',n:'Jul 30',p:'Epic · Anniv. 🎂',i:'🌌',hrs:'≈10 AM – 9 PM',ep:'Early entry 9 AM (hotel perk)',cr:9,s:'epic-universe',m:'U',rk:['epic'],warn:['Second Epic day in 3 — pace it. Anniversary dinner tonight; build in a midday break.'],flag:['Day 2 order: sweep any missed Tier-1 first (Ministry VL drops again at 11), then Tier 2 + re-ride favorites. Anniversary dinner is the anchor — out by 5 PM.']},
 {k:'jul31',d:'Fri',n:'Jul 31',p:'USF + IOA',i:'🎬',hrs:'≈9/10 AM – 9 PM',ep:'Early entry ≈8 AM',cr:7,s:'universal-studios-florida',m:'U',rk:['usf','ioa'],warn:['Last Express Pass day. Tonight: pre-pack — bags go to Bell Services by 9 AM tomorrow.'],flag:[]},
 {k:'aug1',d:'Sat',n:'Aug 1',p:'Swap + Universal AM',i:'🔄',hrs:'Universal AM → BoardWalk PM · Artist Point 7 PM ✅',warn:['The rental stroller rides WITH you to BoardWalk (Kingdom Strollers pickup is there Aug 9).','Skipped-perk FYI: Disney check-in day = FREE water park entry (summer 2026) — you chose Universal instead; swap back anytime.'],flag:[]},
-{k:'aug2',d:'Sun',n:'Aug 2',p:'Animal Kingdom',i:'🦁',hrs:'≈8 AM – 7 PM (closes early)',ep:'ETPE 7:30 AM — realistically arrive ~9',cr:5,s:'animal-kingdom',m:'animal-kingdom',rk:['ak'],warn:['7:00 AM from bed: book Flight of Passage ILL. Tusker House 2:00 PM ✅.'],flag:[]},
-{k:'aug3',d:'Mon',n:'Aug 3',p:'EPCOT',i:'🌍',hrs:'≈9 AM – 9 PM',ep:'ETPE 8:30 AM — skip it, sleep',eeh:'EEH tonight 9–11 PM — deluxe perk',cr:6,s:'epcot',m:'epcot',rk:['ep'],warn:['You will want to ride till 11 PM (do it — Space 220 at 6:55 ✅, then empty park). But BBB is 9:30 AM tomorrow. Cap it at 11, no after-party.'],flag:['Monday = EPCOT extended-evening night. Guardians/Test Track/Frozen with 10-min waits from 9–11 PM. This is the best 2 hours of your Disney week.'],},
-{k:'aug4',d:'Tue',n:'Aug 4',p:'Magic Kingdom',i:'🏰',hrs:'≈9 AM – 10 PM (HEA ~10)',ep:'ETPE 8:30 AM',cr:6,s:'magic-kingdom',m:'magic-kingdom',rk:['mk'],warn:['Late EEH night behind you + BBB at 9:30 AM (conf #356153011650). Mobile-order coffee, split up: Melissa+Delaney to BBB, boys ride.'],flag:[]},
-{k:'aug5',d:'Wed',n:'Aug 5',p:'Hollywood Studios',i:'🎬',hrs:'≈9 AM – 9 PM',ep:'ETPE 8:30 AM — Rise ILL at 7 from bed instead',cr:7,s:'hollywood-studios',m:'hollywood-studios',rk:['hs'],warn:['Tightest turnaround of the trip: Fantasmic ends ~10 PM, Crystal Palace is 8:00 AM sharp tomorrow. Lay out clothes, pack the park bag, set two alarms.'],flag:['MK has extended evening hours 10 PM–midnight tonight (Wednesday). Park-hopper option for Stephen + Evan after Fantasmic: TRON at 11 PM with no wait. Only if tomorrow-you will forgive tonight-you.'],},
-{k:'aug6',d:'Thu',n:'Aug 6',p:'Magic Kingdom',i:'🏰',hrs:'≈9 AM – 10 PM',ep:'Enter early w/ 8 AM dining resv',cr:5,s:'magic-kingdom',m:'magic-kingdom',rk:['mk'],warn:['Crystal Palace 8:00 AM ✅ (conf #356153019880) — bus at 7:30. Rough after Fantasmic night; coffee first, sympathy second.'],flag:['No Halloween party tonight (first MNSSHP is tomorrow) — full evening: Starlight parade ~9, Happily Ever After ~10.'],},
-{k:'aug7',d:'Fri',n:'Aug 7',p:'AK + Springs',i:'🦁',hrs:'≈8 AM – 7 PM · Springs tonight',ep:'ETPE 7:30 AM — arrive when you arrive',cr:4,s:'animal-kingdom',m:'animal-kingdom',rk:['ak'],warn:['7:00 AM from bed: Flight of Passage ILL round 2.'],flag:['First MNSSHP of 2026 hits MK tonight (closes 6 PM to day guests) — you are smartly elsewhere: AK day, Disney Springs evening (now scheduled).'],},
-{k:'aug8',d:'Sat',n:'Aug 8',p:'HS → EPCOT Finale',i:'🎆',hrs:'HS ≈9–1 · EPCOT till Luminous ~9',ep:'7:00 AM: Guardians ILL',cr:7,s:'epcot',m:'epcot',rk:['hs','ep'],warn:['Pack BEFORE Luminous — 5:30 AM wake tomorrow. If Saturday legs fail, drop the HS morning and sleep; the EPCOT half is the non-negotiable.'],flag:[]},
+{k:'aug2',d:'Sun',n:'Aug 2',p:'Animal Kingdom',i:'🦁',hrs:'≈8 AM – 7 PM (closes early)',ep:'ETPE 7:30 AM — realistically arrive ~9',cr:5,s:'animal-kingdom',m:'animal-kingdom',rk:['ak'],warn:['FoP ILL should already be booked (Jul 25 window) — confirm the return window in MDE. Tusker House 2:00 PM ✅.'],flag:['💰 LLMP DAY (budget plan) — Everest/Kali/Safari taps. FoP is a separate ILL.']},
+{k:'aug3',d:'Mon',n:'Aug 3',p:'EPCOT',i:'🌍',hrs:'≈9 AM – 9 PM',ep:'ETPE 8:30 AM — skip it, sleep',eeh:'EEH tonight 9–11 PM — deluxe perk',cr:6,s:'epcot',m:'epcot',rk:['ep'],warn:['You will want to ride till 11 PM (do it — Space 220 at 6:55 ✅, then empty park). But BBB is 9:30 AM tomorrow. Cap it at 11, no after-party.'],flag:['Monday = EPCOT extended-evening night. Guardians/Test Track/Frozen with 10-min waits from 9–11 PM. This is the best 2 hours of your Disney week.','Living with the Land — walk-on AC boat beside Soarin’, ideal storm shelter. 💰 LLMP optional today: your 9–11 PM EEH rides the same headliners free (budget plan in Tips).','🌙 Show order tonight: Luminous 9:00 on the lagoon (World Showcase side) → EEH rides 9:25–11:00. Two finales in one night.'],},
+{k:'aug4',d:'Tue',n:'Aug 4',p:'Magic Kingdom',i:'🏰',hrs:'≈9 AM – 10 PM (HEA ~10)',ep:'ETPE 8:30 AM',cr:6,s:'magic-kingdom',m:'magic-kingdom',rk:['mk'],warn:['Late EEH night behind you + BBB at 9:30 AM (conf #356153011650). Mobile-order coffee, split up: Melissa+Delaney to BBB, boys ride.'],flag:['💰 LLMP DAY (budget plan) — prebook Jul 25 for today. Tonight: PeopleMover after dark before fireworks — Tomorrowland all lit up, zero wait.','🌙 Night priority: curb spot ~8:30 → Starlight parade 9:00 → Happily Ever After ~10:00 · no new ride lines after 9:15.']},
+{k:'aug5',d:'Wed',n:'Aug 5',p:'Hollywood Studios',i:'🎬',hrs:'≈9 AM – 9 PM',ep:'ETPE 8:30 AM — Rise ILL prebooked Jul 25',cr:7,s:'hollywood-studios',m:'hollywood-studios',rk:['hs'],warn:['Tightest turnaround of the trip: Fantasmic ends ~10 PM, Crystal Palace is 8:00 AM sharp tomorrow. Lay out clothes, pack the park bag, set two alarms.'],flag:['MK has extended evening hours 10 PM–midnight tonight (Wednesday). Park-hopper option for Stephen + Evan after Fantasmic: TRON at 11 PM with no wait. Only if tomorrow-you will forgive tonight-you.','💰 LLMP DAY (budget plan): Slinky + Tower + Runaway Railway taps; Rise is a separate ILL.','🎆 FANTASMIC HARD RULE — you have missed this show on every past trip. 8:00 PM: stop riding. 8:35: Sunset Blvd reserved entrance (dining package) or 8:15 standby. Show ~9:00. Tonight this outranks everything.'],},
+{k:'aug6',d:'Thu',n:'Aug 6',p:'Magic Kingdom',i:'🏰',hrs:'≈9 AM – 10 PM',ep:'Enter early w/ 8 AM dining resv',cr:5,s:'magic-kingdom',m:'magic-kingdom',rk:['mk'],warn:['Crystal Palace 8:00 AM ✅ (conf #356153019880) — bus at 7:30. Rough after Fantasmic night; coffee first, sympathy second.'],flag:['No Halloween party tonight (first MNSSHP is tomorrow) — full evening: Starlight parade ~9, Happily Ever After ~10.','💰 No LLMP today (budget plan): 8 AM breakfast beats the gates, characters + parades midday, standby evening · PeopleMover at night if you missed it Aug 4.'],},
+{k:'aug7',d:'Fri',n:'Aug 7',p:'AK + Springs',i:'🦁',hrs:'≈8 AM – 7 PM · Springs tonight',ep:'ETPE 7:30 AM — arrive when you arrive',cr:4,s:'animal-kingdom',m:'animal-kingdom',rk:['ak'],warn:['FoP ILL round 2 — prebooked in the Jul 25 window; confirm in MDE.'],flag:['First MNSSHP of 2026 hits MK tonight (closes 6 PM to day guests) — you are smartly elsewhere: AK day, Disney Springs evening (now scheduled).','💰 No LLMP today — relaxed repeats: safari, shows, and Bluey & Bingo at Conservation Station (character checklist below).'],},
+{k:'aug8',d:'Sat',n:'Aug 8',p:'HS → EPCOT Finale',i:'🎆',hrs:'HS ≈9–1 · EPCOT till Luminous ~9',ep:'Guardians ILL — prebooked Jul 25',cr:7,s:'epcot',m:'epcot',rk:['hs','ep'],warn:['Pack BEFORE Luminous — 5:30 AM wake tomorrow. If Saturday legs fail, drop the HS morning and sleep; the EPCOT half is the non-negotiable.'],flag:['💰 No LLMP today — Guardians via ILL, ETPE morning at HS, standby evening · Living with the Land if missed Aug 3.','🎆 Fantasmic safety net: if Aug 5 somehow missed it, swap tonight — Friendship Boat to HS for the ~9 PM show (you already saw Luminous Aug 3).']},
 {k:'aug9',d:'Sun',n:'Aug 9',p:'Fly Home',i:'🏠',hrs:'MCO → PHL',warn:['Leave the rental stroller with BoardWalk Bell Services — Kingdom Strollers collects it today (return date on order #673967).'],flag:[]}
 ];
 
@@ -4796,7 +4930,7 @@ var DAY_META=[
 var RIDES={
 usf:['Universal Studios Florida',[
  ['Minion Land',[['Despicable Me Minion Mayhem',40,0],['Villain-Con Minion Blast',0,0]]],
- ['Production Central',[['Hollywood Rip Ride Rockit',51,1],['Transformers: The Ride 3D',40,0]]],
+ ['Production Central',[['Transformers: The Ride 3D',40,0]]],
  ['New York',[['Revenge of the Mummy',48,1],['Race Through New York (Fallon)',40,0]]],
  ['San Francisco',[['Fast & Furious: Supercharged',40,0]]],
  ['Diagon Alley',[['Escape from Gringotts',42,2],['Hogwarts Express → IOA',0,0]]],
@@ -4807,15 +4941,15 @@ ioa:['Islands of Adventure',[
  ['Marvel Super Hero Island',[['Incredible Hulk Coaster',54,1],['Spider-Man',40,1],['Doctor Doom’s Fearfall',52,0],['Storm Force Accelatron',0,0]]],
  ['Toon Lagoon',[['Dudley Do-Right’s Ripsaw Falls',44,0],['Popeye & Bluto’s Barges',42,0]]],
  ['Skull Island',[['Reign of Kong',36,0]]],
- ['Jurassic Park',[['VelociCoaster',51,2],['River Adventure',42,1],['Pteranodon Flyers (ride WITH a kid 36–56")',36,0]]],
+ ['Jurassic Park',[['VelociCoaster',51,2],['River Adventure — CLOSED 2026 (refurb until Nov)',42,0],['Pteranodon Flyers (ride WITH a kid 36–56")',36,0]]],
  ['Seuss Landing',[['Cat in the Hat',36,0],['High in the Sky Trolley',36,0],['Caro-Seuss-el',0,0],['One Fish, Two Fish',0,0]]],
  ['Hogsmeade',[['Hagrid’s Magical Creatures',48,2],['Forbidden Journey',48,1],['Flight of the Hippogriff',36,0],['Hogwarts Express → USF',0,0]]]]],
 epic:['Epic Universe',[
  ['Celestial Park',[['Stardust Racers',48,2],['Constellation Carousel',0,0]]],
- ['Super Nintendo World',[['Mario Kart: Bowser’s Challenge',40,2],['Donkey Kong Mine-Cart Madness',40,2],['Yoshi’s Adventure',34,0]]],
- ['Ministry of Magic',[['Battle at the Ministry (VIRTUAL LINE 11 AM)',40,2]]],
- ['Isle of Berk',[['Hiccup’s Wing Gliders',40,1],['Fyre Drill',40,0],['Dragon Racer’s Rally',48,0]]],
- ['Dark Universe',[['Monsters Unchained',48,2],['Curse of the Werewolf',48,1]]]]],
+ ['Super Nintendo World',[['⭐ T1 · Mario Kart: Bowser’s Challenge',40,2],['⭐ T1 · Donkey Kong Mine-Cart Madness',40,2],['Yoshi’s Adventure',34,0]]],
+ ['Ministry of Magic',[['⭐ T1 · Battle at the Ministry (VIRTUAL LINE 11 AM)',40,2]]],
+ ['Isle of Berk',[['⭐ T1 · Hiccup’s Wing Gliders',40,1],['Fyre Drill',40,0],['Dragon Racer’s Rally',48,0]]],
+ ['Dark Universe',[['⭐ T1 · Monsters Unchained',48,2],['Curse of the Werewolf',48,1]]]]],
 vb:['Volcano Bay',[
  ['Krakatau',[['Krakatau Aqua Coaster',42,1],['Ko’okiri Body Plunge',48,0],['Kala & Tai Nui Serpentine',48,0]]],
  ['Rivers & Reefs',[['TeAwa Fearless River',42,0],['Honu (raft slide)',48,0],['ika Moana',0,0],['Kopiko Wai Lazy River',0,0]]]]],
@@ -4847,13 +4981,41 @@ function rlSave(st){try{localStorage.setItem('oc_rides',JSON.stringify(st))}catc
 function rlApply(rid){var st=rlState()[rid]||{};document.querySelectorAll('[data-rid="'+rid+'"]').forEach(function(r){r.classList.toggle('done',!!st.d);r.classList.toggle('skip',!!st.s);var cb=r.querySelector('input');if(cb)cb.checked=!!st.d;});}
 function rlDone(el){var row=el.closest('.rl-row'),rid=row.getAttribute('data-rid'),st=rlState();st[rid]=st[rid]||{};st[rid].d=el.checked?1:0;if(el.checked)st[rid].s=0;rlSave(st);rlApply(rid);}
 function rlSkip(btn){var row=btn.closest('.rl-row'),rid=row.getAttribute('data-rid'),st=rlState();st[rid]=st[rid]||{};st[rid].s=st[rid].s?0:1;if(st[rid].s)st[rid].d=0;rlSave(st);rlApply(rid);}
+var CHARS={
+mk:['Magic Kingdom',[
+ ['Main Street / Parades',['Mickey — Town Square Theater','Festival of Fantasy parade ~3 PM (confirm MDE)','Disney Starlight parade ~9 PM']],
+ ['Fantasyland',['⭐ Cinderella & Tiana — Fairytale Hall','⭐ Visiting Princesses — Fairytale Hall','⭐ Ariel — Her Grotto','⭐ Belle — Enchanted Tales','⭐ Mirabel — Fairytale Garden','Pooh & Tigger — The Thotful Spot',"Circus Pals — Pete’s Silly Sideshow"]]]],
+ep:['EPCOT',[
+ ['World Celebration',['Mickey & Friends — CommuniCore Hall (AC line!)','Figment — Imagination pavilion','Asha (Wish) — near Disney Traders']],
+ ['World Showcase',['⭐ Anna & Elsa — Royal Sommerhus (Norway)','⭐ Belle — France','⭐ Snow White — Germany','⭐ Mulan — China','⭐ Jasmine — Morocco']]]],
+hs:['Hollywood Studios',[
+ ['Studios Lot — “Off the Page” (NEW 2026)',['⭐ Rapunzel','Mulan','⭐ Stitch','Donald & Daisy',"Chip ’n’ Dale",'Goofy']],
+ ['Around the park',['Olaf — Celebrity Spotlight','Mickey & Minnie — Red Carpet Dreams']],
+ ['Galaxy’s Edge (roaming)',['Chewbacca','Rey / Kylo Ren','Stormtrooper patrol']]]],
+ak:['Animal Kingdom',[
+ ['Discovery Island',['⭐ Judy & Nick — Zoogether spot by Tree of Life (Zootopia 2 outfits)','Mickey & Minnie — Adventurers Outpost','Moana — Character Landing']],
+ ["Rafiki’s Planet Watch",['⭐ Bluey & Bingo — Conservation Station (NEW May 2026 — Delaney!)']],
+ ['Dining ✅',['Donald, Daisy, Mickey & Goofy — YOUR Tusker House lunch Aug 2 ✅']]]],
+usf:['Universal Studios',[
+ ['Minion Land / DreamWorks Land',['Gru & the Minions','⭐ Poppy & Branch (Trolls)','Po — Kung Fu Panda','Shrek & Donkey','⭐ Gabby (Gabby’s Dollhouse)']],
+ ['Around the park',['TMNT','SpongeBob & Patrick','Optimus Prime & Bumblebee']]]],
+ioa:['Islands of Adventure',[
+ ['Marvel Super Hero Island',['Spider-Man','Captain America & the X-Men']],
+ ['Jurassic Park',['⭐ Raptor Encounter — meet “Blue” (Grant!)']],
+ ['Seuss Landing',['⭐ The Cat in the Hat','The Grinch']]]],
+epic:['Epic Universe',[
+ ['Super Nintendo World',['⭐ Mario, Luigi & Princess Peach']],
+ ['Isle of Berk',['⭐ Toothless & Hiccup','Vikings of Berk']],
+ ['Dark Universe',["Frankenstein’s Monster & The Bride"]]]]
+};
+function charRow(nm){var rid='ch-'+rlSlug(nm);return '<div class="rl-row" data-rid="'+rid+'"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">'+nm+'</span></label><button class="rl-skip" title="Intentional skip" onclick="rlSkip(this)">−</button></div>';}
 function rideRow(r){var n=r[0],ht=r[1],hd=r[2],rid=rlSlug(n),b='';
  if(hd===2)b+='<span class="rl-chip">🔥🔥</span>';else if(hd===1)b+='<span class="rl-chip">🔥</span>';
  if(ht===48)b+='<span class="rl-chip new">🎉 Delaney @48"</span>';
  else if(ht>48)b+='<span class="rl-chip no">🚫 Delaney ('+ht+'")</span>';
  else if(ht>0)b+='<span class="rl-chip">'+ht+'"</span>';
  return '<div class="rl-row" data-rid="'+rid+'"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">'+n+'</span></label><span class="rl-b">'+b+'</span><button class="rl-skip" title="Intentional skip" onclick="rlSkip(this)">−</button></div>';}
-function injectRideChecklists(){DAY_META.forEach(function(m){if(!m.rk)return;var card=document.getElementById('dc-'+m.k);if(!card)return;var ft=card.querySelector('.dc-footer');if(!ft)return;var html='';m.rk.forEach(function(pk){var P=RIDES[pk];if(!P)return;var body='';P[1].forEach(function(L){body+='<div class="rl-land-blk"><div class="rl-land">'+L[0]+'</div>';L[1].forEach(function(r){body+=rideRow(r)});body+='</div>'});html+='<div class="dc-ridelist"><div class="rl-hd">🎢 Ride Checklist — '+P[0]+'</div><div class="rl-legend">☑ = rode it · <b>−</b> = intentional skip (stays visible) · 🔥🔥 hardest to board / 🔥 popular · 🎉 = Delaney (48") newly unlocked · 🚫 = still too short · Grant &amp; Evan clear everything · checks sync across repeat park days &amp; save on this device</div><div class="rl-body">'+body+'</div></div>'});ft.insertAdjacentHTML('beforebegin',html);});document.querySelectorAll('.rl-row').forEach(function(r){rlApply(r.getAttribute('data-rid'))});}
+function injectRideChecklists(){DAY_META.forEach(function(m){if(!m.rk)return;var card=document.getElementById('dc-'+m.k);if(!card)return;var ft=card.querySelector('.dc-footer');if(!ft)return;var html='';m.rk.forEach(function(pk){var P=RIDES[pk];if(!P)return;var body='';P[1].forEach(function(L){body+='<div class="rl-land-blk"><div class="rl-land">'+L[0]+'</div>';L[1].forEach(function(r){body+=rideRow(r)});body+='</div>'});html+='<div class="dc-ridelist"><div class="rl-hd">🎢 Ride Checklist — '+P[0]+'</div><div class="rl-legend">☑ = rode it · <b>−</b> = intentional skip (stays visible) · 🔥🔥 hardest to board / 🔥 popular · 🎉 = Delaney (48") newly unlocked · 🚫 = still too short · Grant &amp; Evan clear everything · checks sync across repeat park days &amp; save on this device</div><div class="rl-body">'+body+'</div></div>'});m.rk.forEach(function(pk){var C=CHARS[pk];if(!C)return;var body='';C[1].forEach(function(L){body+='<div class="rl-land-blk"><div class="rl-land">'+L[0]+'</div>';L[1].forEach(function(nm){body+=charRow(nm)});body+='</div>'});html+='<div class="dc-ridelist"><div class="rl-hd" style="background:linear-gradient(90deg,#6D28D9,#DB2777);">👋 Character Checklist — '+C[0]+'</div><div class="rl-legend">⭐ = Delaney priority · ☑ met · <b>−</b> = skip · locations shift — confirm in the app day-of</div><div class="rl-body">'+body+'</div></div>'});ft.insertAdjacentHTML('beforebegin',html);});document.querySelectorAll('.rl-row').forEach(function(r){rlApply(r.getAttribute('data-rid'))});}
 function restoreRowChecks(){var st;try{st=JSON.parse(localStorage.getItem('oc_rows')||'{}')}catch(e){st={}}Object.keys(st).forEach(function(id){var row=document.getElementById(id);if(row&&st[id]){row.classList.add('done');var cb=row.querySelector('.dc-cb');if(cb)cb.checked=true;}});}
 
 function dayBarChips(m){var c='';
@@ -4873,6 +5035,18 @@ function stepDay(dir){var i=(window._day||0)+dir;if(i<0||i>=DAY_META.length)retu
 function toggleAllDays(){var b=document.body.classList.toggle('pd-all');var btn=document.getElementById('showAllBtn');if(btn)btn.textContent=b?'Back to one day at a time':'Show all 16 days';}
 function initDayNav(){buildDayStrip();injectDayBars();injectRideChecklists();restoreRowChecks();var t=new Date(),start=new Date(2026,6,25),ix=Math.floor((t-start)/864e5);if(ix<0||ix>15)ix=0;showDay(DAY_META[ix].k);}
 initDayNav();
+
+function printPack() {
+  document.body.classList.add('print-pack');
+  window.print();
+  setTimeout(function(){ document.body.classList.remove('print-pack'); }, 500);
+}
+
+function printTips() {
+  document.body.classList.add('print-tips');
+  window.print();
+  setTimeout(function(){ document.body.classList.remove('print-tips'); }, 500);
+}
 
 function printPlan() {
   // Expand every day card so the whole plan prints, then open the print dialog
