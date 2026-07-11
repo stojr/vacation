@@ -8,7 +8,7 @@ The dashboard's 🗺️ "Park map" chips link to these exact filenames (place PD
 | epcot.pdf | EPCOT | same site |
 | hollywood-studios.pdf | Hollywood Studios | same site |
 | animal-kingdom.pdf | Animal Kingdom | same site |
-| universal-studios-florida.pdf | Universal Studios FL | universalorlando.com → Plan Your Visit → Maps (or the Universal app) |
+| universal-studios.pdf | Universal Studios FL | universalorlando.com → Plan Your Visit → Maps (or the Universal app) |
 | islands-of-adventure.pdf | Islands of Adventure | same |
 | epic-universe.pdf | Epic Universe | same |
 | volcano-bay.pdf | Volcano Bay | same |
