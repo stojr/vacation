@@ -1128,6 +1128,12 @@ a.db-chip:hover{border-color:#006EE6;color:#006EE6;}
     <p>One day at a time — tap a date · ✅ confirmed reservation · 🌙 extended-evening night (your deluxe perk) · 🔴 Universal week · 🔵 Disney week</p>
   </div>
 
+  <div class="pd-person" data-x="1" id="personBar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 2px;padding:10px 14px;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:1px solid #E0E7FF;border-radius:12px;">
+    <span style="font-weight:800;color:#3730A3;font-size:14px;">👤 Whose checklist?</span>
+    <select id="personSel" onchange="ocSwitchPerson(this.value)" aria-label="Whose checklist" style="font-size:14px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid #A5B4FC;background:#fff;color:#312E81;cursor:pointer;"></select>
+    <span style="font-size:12px;color:#6366F1;">Checkboxes save separately per person, on this device.</span>
+  </div>
+
   <div class="pd-nav" data-x="1">
     <button class="pd-arrow" id="pdPrev" onclick="stepDay(-1)">‹</button>
     <div class="day-strip" id="dayStrip"></div>
@@ -4998,8 +5004,16 @@ ak:['Animal Kingdom',[
  ['Asia',[['Expedition Everest',44,1],['Kali River Rapids',38,0],['Feathered Friends in Flight!',0,0]]]]]
 };
 function rlSlug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-')}
-function rlState(){try{return JSON.parse(localStorage.getItem('oc_rides')||'{}')}catch(e){return{}}}
-function rlSave(st){try{localStorage.setItem('oc_rides',JSON.stringify(st))}catch(e){}}
+/* ── Per-person checkbox state (client-only, this device) ── */
+var OC_PEOPLE=['Stephen','Melissa','Evan','Grant','Delaney','Guest'];
+function ocPerson(){try{return localStorage.getItem('oc_person')||'Stephen'}catch(e){return 'Stephen'}}
+function ocKey(base){return base+'::'+ocPerson()}
+function ocMigrate(){try{if(localStorage.getItem('oc_migrated_v1'))return;['oc_rides','oc_rows'].forEach(function(b){var old=localStorage.getItem(b);if(old!==null&&localStorage.getItem(b+'::Stephen')===null)localStorage.setItem(b+'::Stephen',old);});localStorage.setItem('oc_migrated_v1','1');}catch(e){}}
+function ocBuildPersonSel(){var s=document.getElementById('personSel');if(!s)return;var cur=ocPerson();s.innerHTML=OC_PEOPLE.map(function(p){return '<option value="'+p+'"'+(p===cur?' selected':'')+'>'+p+'</option>';}).join('');}
+function ocApplyAll(){document.querySelectorAll('.rl-row').forEach(function(r){rlApply(r.getAttribute('data-rid'));});restoreRowChecks();}
+function ocSwitchPerson(name){try{localStorage.setItem('oc_person',name);}catch(e){}ocApplyAll();}
+function rlState(){try{return JSON.parse(localStorage.getItem(ocKey('oc_rides'))||'{}')}catch(e){return{}}}
+function rlSave(st){try{localStorage.setItem(ocKey('oc_rides'),JSON.stringify(st))}catch(e){}}
 function rlApply(rid){var st=rlState()[rid]||{};document.querySelectorAll('[data-rid="'+rid+'"]').forEach(function(r){r.classList.toggle('done',!!st.d);r.classList.toggle('skip',!!st.s);var cb=r.querySelector('input');if(cb)cb.checked=!!st.d;});}
 function rlDone(el){var row=el.closest('.rl-row'),rid=row.getAttribute('data-rid'),st=rlState();st[rid]=st[rid]||{};st[rid].d=el.checked?1:0;if(el.checked)st[rid].s=0;rlSave(st);rlApply(rid);}
 function rlSkip(btn){var row=btn.closest('.rl-row'),rid=row.getAttribute('data-rid'),st=rlState();st[rid]=st[rid]||{};st[rid].s=st[rid].s?0:1;if(st[rid].s)st[rid].d=0;rlSave(st);rlApply(rid);}
@@ -5038,7 +5052,7 @@ function rideRow(r){var n=r[0],ht=r[1],hd=r[2],rid=rlSlug(n),b='';
  else if(ht>0)b+='<span class="rl-chip">'+ht+'"</span>';
  return '<div class="rl-row" data-rid="'+rid+'"><label class="rl-main"><input type="checkbox" onchange="rlDone(this)"/><span class="rl-name">'+n+'</span></label><span class="rl-b">'+b+'</span><button class="rl-skip" title="Intentional skip" onclick="rlSkip(this)">−</button></div>';}
 function injectRideChecklists(){DAY_META.forEach(function(m){if(!m.rk)return;var card=document.getElementById('dc-'+m.k);if(!card)return;var ft=card.querySelector('.dc-footer');if(!ft)return;var html='';m.rk.forEach(function(pk){var P=RIDES[pk];if(!P)return;var body='';P[1].forEach(function(L){body+='<div class="rl-land-blk"><div class="rl-land">'+L[0]+'</div>';L[1].forEach(function(r){body+=rideRow(r)});body+='</div>'});html+='<div class="dc-ridelist"><div class="rl-hd">🎢 Ride Checklist — '+P[0]+'</div><div class="rl-legend">☑ = rode it · <b>−</b> = intentional skip (stays visible) · 🔥🔥 hardest to board / 🔥 popular · 🎉 = Delaney (48") newly unlocked · 🚫 = still too short · Grant &amp; Evan clear everything · checks sync across repeat park days &amp; save on this device</div><div class="rl-body">'+body+'</div></div>'});m.rk.forEach(function(pk){var C=CHARS[pk];if(!C)return;var body='';C[1].forEach(function(L){body+='<div class="rl-land-blk"><div class="rl-land">'+L[0]+'</div>';L[1].forEach(function(nm){body+=charRow(nm)});body+='</div>'});html+='<div class="dc-ridelist"><div class="rl-hd" style="background:linear-gradient(90deg,#6D28D9,#DB2777);">👋 Character Checklist — '+C[0]+'</div><div class="rl-legend">⭐ = Delaney priority · ☑ met · <b>−</b> = skip · locations shift — confirm in the app day-of</div><div class="rl-body">'+body+'</div></div>'});ft.insertAdjacentHTML('beforebegin',html);});document.querySelectorAll('.rl-row').forEach(function(r){rlApply(r.getAttribute('data-rid'))});}
-function restoreRowChecks(){var st;try{st=JSON.parse(localStorage.getItem('oc_rows')||'{}')}catch(e){st={}}Object.keys(st).forEach(function(id){var row=document.getElementById(id);if(row&&st[id]){row.classList.add('done');var cb=row.querySelector('.dc-cb');if(cb)cb.checked=true;}});}
+function restoreRowChecks(){var st;try{st=JSON.parse(localStorage.getItem(ocKey('oc_rows'))||'{}')}catch(e){st={}}document.querySelectorAll('.dc-row').forEach(function(row){var on=!!(row.id&&st[row.id]);row.classList.toggle('done',on);var cb=row.querySelector('.dc-cb');if(cb)cb.checked=on;});}
 
 function dayBarChips(m){var c='';
  if(m.wk)c+='<span class="db-chip '+(m.wk[1]?'db-wl':'db-wf')+'">'+(m.wk[1]?'⏰ Wake '+m.wk[0]+' — locked':'🛌 Wake ~'+m.wk[0]+' (flexible)')+'</span>';
@@ -5056,7 +5070,7 @@ function updateArrows(){var p=document.getElementById('pdPrev'),n=document.getEl
 function showDay(k){document.querySelectorAll('#tab-planner .dc-card').forEach(function(c){c.classList.add('day-hidden')});var el=document.getElementById('dc-'+k);if(el){el.classList.remove('day-hidden');var b=document.getElementById('dc-'+k+'-body');if(b)b.classList.remove('collapsed');}document.querySelectorAll('.ds-chip').forEach(function(x){x.classList.remove('on')});var ch=document.getElementById('ds-'+k);if(ch){ch.classList.add('on');ch.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});}window._day=DAY_META.findIndex(function(m){return m.k===k});updateArrows();}
 function stepDay(dir){var i=(window._day||0)+dir;if(i<0||i>=DAY_META.length)return;showDay(DAY_META[i].k);}
 function toggleAllDays(){var b=document.body.classList.toggle('pd-all');var btn=document.getElementById('showAllBtn');if(btn)btn.textContent=b?'Back to one day at a time':'Show all 16 days';}
-function initDayNav(){buildDayStrip();injectDayBars();injectRideChecklists();restoreRowChecks();var t=new Date(),start=new Date(2026,6,25),ix=Math.floor((t-start)/864e5);if(ix<0||ix>15)ix=0;showDay(DAY_META[ix].k);}
+function initDayNav(){ocMigrate();ocBuildPersonSel();buildDayStrip();injectDayBars();injectRideChecklists();restoreRowChecks();var t=new Date(),start=new Date(2026,6,25),ix=Math.floor((t-start)/864e5);if(ix<0||ix>15)ix=0;showDay(DAY_META[ix].k);}
 initDayNav();
 
 function printPack() {
@@ -5090,7 +5104,7 @@ function dcCheck(cb, rowId) {
   var row = document.getElementById(rowId);
   if (!row) return;
   row.classList.toggle('done', cb.checked);
-  try{var st=JSON.parse(localStorage.getItem('oc_rows')||'{}');st[rowId]=cb.checked?1:0;localStorage.setItem('oc_rows',JSON.stringify(st));}catch(e){}
+  try{var st=JSON.parse(localStorage.getItem(ocKey('oc_rows'))||'{}');st[rowId]=cb.checked?1:0;localStorage.setItem(ocKey('oc_rows'),JSON.stringify(st));}catch(e){}
 }
 
 function dcEdit(textId, btn) {

@@ -1,0 +1,8 @@
+# Only index.html + maps/ are published to GitHub Pages.
+# Everything else stays local — the handoff and working copies contain the
+# family password and private reservation notes, so keep them out of the repo.
+*
+!index.html
+!maps/
+!maps/**
+!.gitignore
